@@ -10,30 +10,27 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Debug
+        run: |
+          pwd
+          ls -la
 
       - name: Kill Serial Processes
         run: |
-          pkill -f arduino || true
           pkill -f serial || true
-          sleep 2
-
-      - name: Install AVR Core
-        run: |
-          arduino-cli core update-index
-          arduino-cli core install arduino:avr
+          pkill -f arduino || true
+          sleep 3
 
       - name: Compile
         run: |
           arduino-cli compile \
           --fqbn arduino:avr:uno .
 
-      - name: Wait Before Upload
-        run: sleep 5
-
       - name: Upload
         run: |
+          sleep 5
           arduino-cli upload \
           -p /dev/cu.wchusbserial21110 \
           --fqbn arduino:avr:uno .
