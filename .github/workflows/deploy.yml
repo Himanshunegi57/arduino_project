@@ -1,0 +1,24 @@
+name: Arduino Auto Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile
+        run: |
+          arduino-cli compile \
+          --fqbn arduino:avr:uno .
+
+      - name: Upload
+        run: |
+          arduino-cli upload \
+          -p /dev/cu.wchusbserial21110 \
+          --fqbn arduino:avr:uno .
