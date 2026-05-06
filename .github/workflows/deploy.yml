@@ -10,15 +10,28 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Debug Files
+        run: |
+          pwd
+          ls -la
+
+      - name: Install AVR Core
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install arduino:avr
 
       - name: Compile
         run: |
           arduino-cli compile \
-          --fqbn arduino:avr:uno .
+          --fqbn arduino:avr:uno \
+          ./arduino_project.ino
 
       - name: Upload
         run: |
           arduino-cli upload \
           -p /dev/cu.wchusbserial21110 \
-          --fqbn arduino:avr:uno .
+          --fqbn arduino:avr:uno \
+          .
