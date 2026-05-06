@@ -13,10 +13,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Debug Files
+      - name: Kill Serial Processes
         run: |
-          pwd
-          ls -la
+          pkill -f arduino || true
+          pkill -f serial || true
+          sleep 2
 
       - name: Install AVR Core
         run: |
@@ -26,12 +27,13 @@ jobs:
       - name: Compile
         run: |
           arduino-cli compile \
-          --fqbn arduino:avr:uno \
-          ./arduino_project.ino
+          --fqbn arduino:avr:uno .
+
+      - name: Wait Before Upload
+        run: sleep 5
 
       - name: Upload
         run: |
           arduino-cli upload \
           -p /dev/cu.wchusbserial21110 \
-          --fqbn arduino:avr:uno \
-          .
+          --fqbn arduino:avr:uno .
